@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Contact</title>
+	<meta charset="UTF-8">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+	<link rel="stylesheet" type="text/css" href="css/contact.css">
+
+
+	<script type="text/javascript">
+	function sentmessage(){
+		let name =   document.getElementById("name").value;
+		let mail =   document.getElementById("mail").value;
+		let memsage =   document.getElementById("message").value;
+
+if(name=="" || mail=="" || message=="")
+{
+	alert("Please fill all fields");
+}
+else {
+	alert("Message Sent !");
+
+}
+}
+
+	</script>
+</head>
+<style>
+.wrap {
+  width: 50%;
+  margin-top: 8px;
+  background: #DCDCDC;
+  border-radius: 30px;
+  overflow: hidden;
+  padding: 72px 55px 90px 55px;
+}
+
+
+
+
+body {
+  background: #cd5a91;
+}
+
+</style>
+<body>
+	<center>
+	<div class="wrap ">
+					<h1 style="font-family:Brush Script MT; font-size:100px;">
+						Contact Us
+					</h1>
+
+						<p style="font-family: Apple Chancery ; font-size:20px;"> If you have any question, don't hesitate to send us a little message ! We will be happy to help you ! </p>
+						<br>
+						<div class="input-container">
+							<input id="name" type="name" required=""/>
+							<label>NAME</label>
+						</div>
+						<div class="input-container">
+							<input id="mail" type="mail" required=""/>
+							<label>EMAIL</label>
+						</div>
+						<div class="message-container">
+							<textarea id="message" type="message" background="transparent" required=""/>
+							<label>MESSAGE</label>
+
+						</div>
+					<div>
+						<input type="submit" onclick="sentmessage()" value="Sent Message"/>
+					</div>
+</center>
+
+
+
+
+</body>
+</html>

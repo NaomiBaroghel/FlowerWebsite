@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+
+
+
+<style>
+
+.wrap {
+  width: 80%;
+  margin-top: 8px;
+  background: #DCDCDC;
+  border-radius: 30px;
+  overflow: hidden;
+  padding: 72px 55px 0px 55px;
+}
+body {
+  background: #cd5a91;
+}
+
+</style>
+
+
+
+
+
+
+
+  </head>
+    <body >
+
+
+<center>
+  	<div class="wrap">
+  <h1 style="font-family:Brush Script MT; font-size:100px;"> Shops </h1>
+
+
+<div id="listshops" >
+
+
+
+
+
+
+</div>
+</center>
+
+
+
+</div>
+</div>
+
+<script type="text/javascript">
+$('document').ready(function(){displayshops()});
+
+//displayshops();
+
+
+async function displayshops()
+{
+  const divshops = document.getElementById('listshops');
+
+  var options = { method: 'GET',
+               headers: {"Content-Type": "application/json"},
+               };
+
+
+  await fetch("http://localhost:8080/shops",options)
+  .then((resp) => resp.json())
+  .then(function(data) {
+  //  console.log(data);
+    let shops = data.shops;
+    return shops.map(function(shop) {
+    console.log(shop.catalog);
+      let div1 = createNode('div');
+      div1.style.float='left';
+      div1.style.padding="20px";
+
+
+      let a = createNode('a');
+      a.href=shop.catalog;
+
+      let div2 = createNode('div');
+      div2.style.float='left';
+      div2.classList.add("col-sm-4");
+
+      let div3 = createNode('div');
+      div3.style.float='left';
+      div3.classList.add("col-sm-8");
+
+
+
+      let pname = createNode('p');
+     pname.style.fontStyle="italic";
+     pname.style.fontWeight="bold";
+     pname.style.fontSize="50px";
+     pname.style.fontFamily="Avantgarde";
+
+     let buttoncatalog = createNode('input');
+     //buttoncatalog.style.width="10%";
+    // buttoncatalog.style.height="8%";
+     buttoncatalog.type='button';
+     buttoncatalog.classList.add("btn");
+     buttoncatalog.classList.add("btn-light");
+     buttoncatalog.value="Show our catalog";
+     buttoncatalog.onclick=function()
+     {
+
+       document.cookie='shop='+shop.id;
+
+       $('#content').load("views/catalogbis.ejs");
+     };
+
+
+
+    // pname.href=shop.catalog;
+  //  pname.setAttribute("href","javascript:void(0)");
+
+     //pname.onclick = redirectfunc(shop.catalog);
+
+//     pname.addEventListener("click ", function () {
+//       $("#content").load(shop.catalog);});
+
+
+
+      let pslogan = createNode('p');
+
+      if(shop.isAvalaible!=1)
+      {
+        pslogan.style.color='red';
+      }
+      pslogan.style.fontStyle="italic";
+      pslogan.style.fontSize="20px";
+      pslogan.style.fontFamily="Georgia";
+
+
+      let imgshop = createNode('img');
+      imgshop.src = "images/flowershop.jpg";
+      imgshop.style.height='auto';
+      imgshop.style.width='100%';
+      imgshop.style.borderRadius='50%';
+
+      if(pname.innerText)
+      {
+        pname.innerHTML = `${shop.name}`;
+      }
+      else pname.textContent =`${shop.name}`;
+      pslogan.innerHTML = `${shop.slogan}`;
+
+
+      append(div2, imgshop);
+      append(div3, pname);
+      append(div3, pslogan);
+  //    append(div3,a);
+  if(shop.isAvalaible==1)
+  {
+     append(div3,buttoncatalog);}
+      append(div1,div2);
+      append(div1,div3);
+      append(divshops,div1);
+
+
+    })
+  })
+
+  .catch(function(error) {
+    console.log(error);
+  });
+};
+
+function redirectfunc(url)
+{
+
+     $("#content").load(url);
+}
+function createNode(element) {
+    return document.createElement(element);
+};
+
+function append(parent, el) {
+  return parent.appendChild(el);
+};
+
+
+
+ </script>
+  </body>
+</html>

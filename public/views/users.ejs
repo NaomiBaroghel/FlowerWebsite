@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+<style>
+
+.wrap {
+  width: 80%;
+  margin-top: 8px;
+  background: #DCDCDC;
+  border-radius: 30px;
+  overflow: hidden;
+  padding: 72px 55px 90px 55px;
+}
+body {
+  background: #cd5a91;
+}
+
+</style>
+  </head>
+    <body >
+
+
+<center>
+  	<div class="wrap">
+  <h1 style="font-family:Brush Script MT; font-size:100px;"> Users </h1>
+<div style="float:left;position:relative;left:35%;">
+  <button type="button" data-toggle="modal" href="#addModal"  class="btn btn-light"  style="width:10%;height:5%;margin:20px;"><span><img src="images/plus.png" style="height:auto;width:20%;" /></span>&nbsp;Add User</button>
+
+  <button type="button" class="btn btn-light" onclick="refresh()" style="width:10%;height:5%;margin:20px;"><span><img src="images/refresh.png" style="height:auto;width:20%;" /></span>&nbsp;Refresh</button>
+
+</div>
+
+  <div id="listusers" >
+
+
+
+
+
+
+  </div>
+
+
+</center>
+
+</div>
+</div>
+
+<script type="text/javascript">
+$('document').ready(function(){displayusers()});
+
+//displayshops();
+
+
+async function displayusers()
+{
+  const divusers = document.getElementById('listusers');
+  let loginuser="";
+
+
+
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var allcookies = decodedCookie.split(';');
+
+for (let i =0; i< allcookies.length; i++)
+{
+
+  let cookiename = allcookies[i].split('=')[0];
+  let cookievalue = allcookies[i].split('=')[1];
+
+
+    if(cookiename.includes("session"))
+    {
+      if(!cookievalue.includes("no"))
+      {
+      let userid = cookievalue.split(',')[0];
+    //  let password = cookievalue.split(',')[1];
+      let role = cookievalue.split(',')[1];
+
+      loginuser = {userid,role};
+
+
+
+
+    }
+  }
+
+
+}
+
+
+if(loginuser.role==2)
+{
+  document.getElementById("divworker").style.display = "block";
+
+}
+
+  var options = { method: 'GET',
+               headers: {"Content-Type": "application/json"},
+            };
+
+  let url="http://localhost:8080/users";
+  url = url+"?"+ new URLSearchParams(loginuser).toString();
+
+  await fetch(url,options) //dans l'url il est écris si c'est un admin ou un worker pour renvoyer la list correspondante
+  .then((resp) => resp.json())
+  .then(function(data) {
+  //  console.log(data);
+    let users = data.users;
+    return users.map(function(user) {
+  //  console.log(shop.catalog);
+      let div1 = createNode('div');
+      div1.style.float='left';
+      div1.style.padding="20px";
+      div1.style.width="550px";
+
+      let a = createNode('a');
+    //  a.href=shop.catalog;
+
+      let div2 = createNode('div');
+      div2.style.float='left';
+      div2.classList.add("col-sm-4");
+
+      let div3 = createNode('div');
+      div3.style.float='left';
+      div3.classList.add("col-sm-8");
+
+      let div4 = createNode('div');
+      div4.style.float='left';
+    //  div4.classList.add("col-sm-8");
+
+      let pname = createNode('p');
+     pname.style.fontStyle="italic";
+     pname.style.fontWeight="bold";
+     pname.style.fontSize="30px";
+     pname.style.fontFamily="Georgia";
+      pname.innerHTML = "\n\n Name : " + `${user.name}`;
+
+
+
+      let prole = createNode('p');
+
+
+      if (user.isWorker==1)
+      {
+        prole.innerHTML = "Status : Worker";
+
+      }
+      else if(user.isAdmin==1)
+      {
+        prole.innerHTML = "Status : Admin";
+
+      }
+      else {
+        prole.innerHTML = "Status : Client";
+
+      }
+
+      prole.style.fontStyle="italic";
+      prole.style.fontSize="18px";
+      prole.style.fontFamily="Georgia";
+
+      let ppassword = createNode('p');
+     ppassword.style.fontStyle="italic";
+     ppassword.style.fontSize="18px";
+     ppassword.style.fontFamily="Georgia";
+     ppassword.innerHTML = "Password : "+ `${user.password}`;
+
+
+
+      let imgprofil = createNode('img');
+      imgprofil.src = "images/avataruser.png";
+      imgprofil.style.height='auto';
+      imgprofil.style.width='100%';
+      imgprofil.style.borderRadius='50%';
+
+
+      let deleteuser = createNode('input');
+      deleteuser.type="image";
+      deleteuser.src="images/delete.png";
+      deleteuser.style.width="5%";
+      deleteuser.style.height="100%";
+      deleteuser.style.position="relative";
+      deleteuser.style.left="40%";
+      deleteuser.onclick = function(){
+        document.getElementById("btndelete").onclick = async function (){
+
+          await spinner();
+          await $.ajax ({
+            url :"http://localhost:8080/deleteuser",
+            type: "POST",
+            data : JSON.stringify(user),
+            timeout: 5000,
+
+            contentType: 'application/json; charset=utf-8',
+            success: function(data){
+              $('#spinnerModal').modal('hide');
+                  alert('User successfully deleted \n Refresh to see it');
+                  $('#deleteModal').modal('hide');
+                  $('body').removeClass('modal-open');
+                  $('.modal-backdrop').remove();
+              },
+              error: function(xmlhttprequest, textstatus, message) {
+                if(textstatus==="timeout") {
+                    alert("got timeout");
+                }},
+              statusCode: {
+              409: function() {
+                alert('Your user does not exist');
+              },
+
+              400: function() {
+                 alert('bad request');
+             },
+
+           } });
+      };
+
+
+        $('#deleteModal').modal('show');
+
+
+
+ };
+
+
+      let updateuser = createNode('input');
+      updateuser.type="image";
+      updateuser.src="images/update.png";
+      updateuser.style.width="5%";
+      updateuser.style.height="100%";
+      updateuser.style.position="relative";
+      updateuser.style.left="35%";
+
+      updateuser.onclick = function(){
+
+        document.getElementById("updateusername").value= `${user.name}`;
+        document.getElementById("updatepassword").value= `${user.password}`;
+        if(user.isWorker==0 && user.isAdmin==0)
+        {
+          document.getElementById("divupdateworker").style.display = "none";
+          console.log("notdisplay");
+        }
+        if(user.isWorker==1)
+        {
+          document.getElementById("updateworker").checked=true;
+        }
+        else if(user.isAdmin==1)
+        {
+          document.getElementById("updateadmin").checked=true;
+        }
+        document.getElementById("btnupdate").onclick = async function ()
+        {
+          user.newname = document.getElementById("updateusername").value;
+          user.newpassword = document.getElementById("updatepassword").value;
+          user.newworker=document.getElementById("updateworker").checked;
+          user.newadmin=document.getElementById("updateadmin").checked;
+          user.newemail=user.email;
+          console.log(user.newworker);
+          console.log(user.newadmin);
+          let okupdate=false;
+          if(user.newname!=null&&user.newpassword!=null)
+          {
+            if(user.isWorker==1 || user.isAdmin==1)
+            {
+               if(user.newworker && (!user.newadmin ) || user.newadmin &&(!user.newworker ))
+               {
+                 okupdate=true;
+                 console.log(okupdate);
+               }
+               else {
+                 alert('user can only have one status');
+               }
+
+             }
+             else {
+               okupdate=true;
+                  }
+            }
+                else
+                {
+                  alert('please enter all the informations')
+                }
+
+
+if(okupdate){
+  await spinner();
+            await $.ajax ({
+              url :"http://localhost:8080/updateuser",
+              type: "POST",
+              data : JSON.stringify(user),
+              timeout: 5000,
+            //  dataType: 'text json',
+              contentType: 'application/json; charset=utf-8',
+              success: function(data){
+                $('#spinnerModal').modal('hide');
+                    alert('User successfully update \n Refresh to see it');
+                    $('#updateModal').modal('hide');
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+                },
+                error: function(xmlhttprequest, textstatus, message) {
+                  if(textstatus==="timeout") {
+                      alert("got timeout");
+                          $('#spinnerModal').modal('hide');
+                  }},
+                statusCode: {
+                409: function() {
+                  alert('Error please try again');
+                      $('#spinnerModal').modal('hide');
+                },
+
+                400: function() {
+                   alert('bad request');
+                       $('#spinnerModal').modal('hide');
+               },
+               401:function() {
+                  alert('Cannot update this user because another user already has these informations' );
+                      $('#spinnerModal').modal('hide');
+                }
+             } });
+        };
+      };
+
+        $('#updateModal').modal('show');
+};
+
+
+
+
+      append(div2, imgprofil);
+      if(loginuser.role==2)
+      {
+        append(div4,updateuser);
+        append(div4,deleteuser);
+        append(div3,div4);
+
+      }
+
+
+      append(div3, pname);
+
+      if(loginuser.role==2)
+      {
+          append(div3, ppassword);
+
+      }
+      append(div3, prole);
+
+
+      append(div1,div2);
+      append(div1,div3);
+      append(divusers,div1);
+
+
+    })
+  })
+
+  .catch(function(error) {
+    console.log(error);
+  });
+};
+
+
+function createNode(element) {
+    return document.createElement(element);
+};
+
+function append(parent, el) {
+  return parent.appendChild(el);
+};
+
+function refresh()
+{
+  $("#content").load("views/users.ejs");
+
+}
+async function spinner(){  $('#spinnerModal').modal('show');return new Promise(resolve => {
+    setTimeout(() => {
+      resolve('work');
+    }, 2000)})};
+
+
+
+async function adduser()
+{
+  let  name = document.getElementById("username").value;
+  let  password=document.getElementById("password").value;
+  let  isadmin=document.getElementById("admin").checked;
+  let  isworker=document.getElementById("worker").checked;
+  let  isclient=document.getElementById("client").checked;
+  console.log(isworker);
+  console.log(isclient);
+
+  if(name!=null&&password!=null)
+  {
+  if(isadmin && (!isworker && !isclient) || isworker &&(!isadmin && !isclient) || isclient &&(!isadmin && !isworker))
+  {
+    let user = {name,password,isadmin,isworker,isclient}
+    var options = { method: 'POST',
+                 headers: {"Content-Type": "application/json"},
+                 body : JSON.stringify(user) };
+
+    let ok =400;
+
+//  await fetch("http://localhost:8080/add",options)
+
+  await spinner();
+  await $.ajax ({
+    url :"http://localhost:8080/add",
+    type: "POST",
+    data : JSON.stringify(user),
+    timeout:5000,
+  //  dataType: 'text json',
+    contentType: 'application/json; charset=utf-8',
+
+    success: function(data){
+$('#spinnerModal').modal('hide');
+          alert('User successfully added \n Refresh to see it');
+          $('#addModal').modal('hide');
+          $('body').removeClass('modal-open');
+          $('.modal-backdrop').remove();
+
+      },
+       error: function(xmlhttprequest, textstatus, message) {
+         if(textstatus==="timeout") {
+             alert("got timeout");
+         }},
+      statusCode: {
+      401: function() {
+        alert('This user already exists, please change username or password');
+      },
+
+      400: function() {
+         alert('bad request');
+     },
+     504: function(){
+       alert('timeout error')
+     }
+   } });
+
+
+}
+  else {
+    alert("Error : the user need to have only one status");
+  }
+
+}
+else {
+  alert("Error : Please fill all fields");
+}
+
+
+}
+function cancel()
+{
+  $('#deleteModal').modal('hide');
+  $('body').removeClass('modal-open');
+  $('.modal-backdrop').remove();
+}
+
+ </script>
+
+ <!-- Modal HTML -->
+ <div id="addModal" class="modal fade">
+ 	<div class="modal-dialog modal-login">
+ 		<div class="modal-content">
+ 			<div class="modal-header">
+ 				<div class="avatar">
+ 					<img src="/images/img_avatar2.png" alt="Avatar">
+ 				</div>
+ 				<h4 class="modal-title">Add User</h4>
+                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+ 			</div>
+ 			<div class="modal-body">
+ 				<form id="formadd"  >
+ 					<div class="form-group">
+ 						<input type="text" class="form-control" name="username" id="username" placeholder="Username" required="required">
+ 					</div>
+ 					<div class="form-group">
+ 						<input type="password" class="form-control" name="password" id="password" placeholder="Password" required="required">
+ 					</div>
+          <div class="form-group" style="float:left;">
+
+            <div id="divworker" style="display:none">
+              <input type="checkbox" id="admin" name="admin">
+              <label id="labeladmin" for="admin">Admin</label><br>
+          <input type="checkbox" id="worker" name="worker">
+          <label id="labelworker" for="worker">Worker</label>
+        </div>
+        <div>
+          <input type="checkbox" id="client" name="client"  >
+          <label for="client">Client</label><br>
+        </div>
+        </div>
+
+ 					<div class="form-group">
+ 						<button type="button" id="btncreate" class="btn btn-primary btn-lg btn-block login-btn" onclick="adduser()" >Create</button>
+ 					</div>
+ 				</form>
+ 			</div>
+ 		</div>
+ 	</div>
+ </div>
+
+
+
+  <!-- Modal HTML -->
+  <div id="updateModal" class="modal fade">
+  	<div class="modal-dialog modal-login">
+  		<div class="modal-content">
+  			<div class="modal-header">
+  				<div class="avatar">
+  					<img src="/images/img_avatar2.png" alt="Avatar">
+  				</div>
+  				<h4 class="modal-title">Update User</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+  			</div>
+  			<div class="modal-body">
+  				<form id="fromupdate"  >
+  					<div class="form-group">
+  						<input type="text" class="form-control" name="username" id="updateusername" placeholder="Username" required="required">
+  					</div>
+  					<div class="form-group">
+  						<input type="password" class="form-control" name="password" id="updatepassword" placeholder="Password" required="required">
+  					</div>
+           <div class="form-group" style="float:left;">
+
+             <div id="divupdateworker">
+               <input type="checkbox" id="updateadmin" name="admin">
+               <label  for="admin">Admin</label><br>
+           <input type="checkbox" id="updateworker" name="worker">
+           <label  for="worker">Worker</label>
+         </div>
+         </div>
+
+  					<div class="form-group">
+  						<button type="button" id="btnupdate" class="btn btn-primary btn-lg btn-block login-btn" >Update</button>
+  					</div>
+  				</form>
+  			</div>
+  		</div>
+  	</div>
+  </div>
+
+
+  <!-- Modal HTML -->
+
+  <div id="deleteModal" class="modal fade">
+    <div class="modal-dialog modal-login">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="avatar">
+            <img src="/images/img_avatar2.png" alt="Avatar">
+          </div>
+          <h4 class="modal-title">Delete User</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="fromdelete"  >
+            <p>Are you sure you want to delete this user ? </p>
+         </div>
+
+            <div class="form-group">
+
+              <button type="button" id="btndelete" class="btn btn-primary btn-lg btn-block login-btn" >Delete</button>
+              <button type="button" id="btncancel" class="btn btn-primary btn-lg btn-block login-btn" onclick="cancel()">Cancel</button>
+
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="spinnerModal">
+        <div class="modal-dialog modal-dialog-centered text-center" role="document">
+            <span class="fa fa-spinner fa-spin fa-3x w-100"></span>
+        </div>
+    </div>
+
+  </body>
+</html>
