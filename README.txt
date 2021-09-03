@@ -1,3 +1,8 @@
+To run the project :
+On the terminal :
+npm i 
+npm start
+
 Please use private navigation to run this website. 
 If there is any extension it can cause trouble to the cookies.
 
